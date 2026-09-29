@@ -238,3 +238,11 @@
 - [x] Constraints: existing Directful color system, Roboto font, reference image two.jpg for layout vibe
 - [x] Show 3 design options, implement user's pick (fanned card row)
 - [x] Gradient calendar vibe + real event photos on cards; verified both buttons and mobile width — no console errors
+
+## Updated connected Content system
+- [ ] Add the shared Events & Holidays calendar workspace and calendar-state-aware starter
+- [ ] Replace fixed monthly packages with exact-date Standard, Event-based, and Seasonal periods
+- [ ] Align AI planning, generation, review, and publishing around content periods
+- [ ] Rebuild Published as an active-period timeline
+- [ ] Merge Releases and performance into connected Results views
+- [ ] Apply approved terminology and verify the complete workflow
