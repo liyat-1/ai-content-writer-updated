@@ -17,3 +17,5 @@
 - The year-round foundation remains live underneath seasonal publications; uncovered future months automatically use it until AI content is explicitly scheduled.
 - AI editing transcripts and attachment composer controls use the installed AI Elements primitives so chat behavior stays accessible and consistent.
 - Package AI planning opens as the sole full workspace, then minimizes into a purpose-built 440px assistant rail beside the calendar without resetting; narrower screens stack instead of compressing.
+
+- The Content Library opens on an events-horizon starter screen; "Keep current content" reveals the published library and "Localize with AI" opens the full planner. Why: the first screen should sell AI localization instead of starting at the calendar.
