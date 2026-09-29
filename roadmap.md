@@ -240,9 +240,9 @@
 - [x] Gradient calendar vibe + real event photos on cards; verified both buttons and mobile width — no console errors
 
 ## Updated connected Content system
-- [ ] Add the shared Events & Holidays calendar workspace and calendar-state-aware starter
-- [ ] Replace fixed monthly packages with exact-date Standard, Event-based, and Seasonal periods
+- [x] Add the shared Events & Holidays calendar workspace and calendar-state-aware starter
+- [x] Replace fixed monthly packages with exact-date Standard, Event-based, and Seasonal periods
 - [ ] Align AI planning, generation, review, and publishing around content periods
-- [ ] Rebuild Published as an active-period timeline
-- [ ] Merge Releases and performance into connected Results views
-- [ ] Apply approved terminology and verify the complete workflow
+- [x] Rebuild Published as an active-period timeline
+- [x] Merge Releases and performance into connected Results views
+- [x] Apply approved terminology and verify the complete workflow
