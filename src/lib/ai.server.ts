@@ -12,6 +12,8 @@ export function attachmentParts(files: PreparedAttachment[]): UserContent {
       parts.push({ type: "image", image: f.dataUrl });
     } else if (f.kind === "pdf" && f.dataUrl) {
       parts.push({ type: "file", data: f.dataUrl.split(",")[1], mediaType: "application/pdf", filename: f.name });
+    } else if (f.kind === "video") {
+      parts.push({ type: "text", text: `Attached video "${f.name}" — no preview frame could be captured in the user's browser, so its contents are unknown. Acknowledge it by name and ask what it shows if that matters.` });
     } else if (f.text) {
       parts.push({ type: "text", text: `Attached file "${f.name}" (${f.summary ?? ""}):\n"""\n${f.text}\n"""` });
     } else {
