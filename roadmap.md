@@ -242,7 +242,7 @@
 ## Updated connected Content system
 - [x] Add the shared Events & Holidays calendar workspace and calendar-state-aware starter
 - [x] Replace fixed monthly packages with exact-date Standard, Event-based, and Seasonal periods
-- [ ] Align AI planning, generation, review, and publishing around content periods
+- [x] Align AI planning, generation, review, and publishing around content periods
 - [x] Rebuild Published as an active-period timeline
 - [x] Merge Releases and performance into connected Results views
 - [x] Apply approved terminology and verify the complete workflow
