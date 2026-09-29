@@ -18,6 +18,7 @@ import { Route as RoiRouteImport } from './routes/roi'
 import { Route as StructuredRouteImport } from './routes/structured'
 import { Route as ContentIndexRouteImport } from './routes/content.index'
 import { Route as ContentAbTestsRouteImport } from './routes/content.ab-tests'
+import { Route as ContentEventsRouteImport } from './routes/content.events'
 import { Route as ContentHistoryRouteImport } from './routes/content.history'
 import { Route as ContentPerformanceRouteImport } from './routes/content.performance'
 import { Route as ContentPublishedRouteImport } from './routes/content.published'
@@ -81,6 +82,11 @@ const ContentIndexRoute = ContentIndexRouteImport.update({
 const ContentAbTestsRoute = ContentAbTestsRouteImport.update({
   id: '/content/ab-tests',
   path: '/content/ab-tests',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContentEventsRoute = ContentEventsRouteImport.update({
+  id: '/content/events',
+  path: '/content/events',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContentHistoryRoute = ContentHistoryRouteImport.update({
@@ -188,6 +194,7 @@ export interface FileRoutesByFullPath {
   '/roi': typeof RoiRoute
   '/structured': typeof StructuredRoute
   '/content/ab-tests': typeof ContentAbTestsRoute
+  '/content/events': typeof ContentEventsRoute
   '/content/history': typeof ContentHistoryRoute
   '/content/performance': typeof ContentPerformanceRoute
   '/content/published': typeof ContentPublishedRoute
@@ -217,6 +224,7 @@ export interface FileRoutesByTo {
   '/roi': typeof RoiRoute
   '/structured': typeof StructuredRoute
   '/content/ab-tests': typeof ContentAbTestsRoute
+  '/content/events': typeof ContentEventsRoute
   '/content/history': typeof ContentHistoryRoute
   '/content/performance': typeof ContentPerformanceRoute
   '/content/published': typeof ContentPublishedRoute
@@ -248,6 +256,7 @@ export interface FileRoutesById {
   '/roi': typeof RoiRoute
   '/structured': typeof StructuredRoute
   '/content/ab-tests': typeof ContentAbTestsRoute
+  '/content/events': typeof ContentEventsRoute
   '/content/history': typeof ContentHistoryRoute
   '/content/performance': typeof ContentPerformanceRoute
   '/content/published': typeof ContentPublishedRoute
@@ -280,6 +289,7 @@ export interface FileRouteTypes {
     | '/roi'
     | '/structured'
     | '/content/ab-tests'
+    | '/content/events'
     | '/content/history'
     | '/content/performance'
     | '/content/published'
@@ -309,6 +319,7 @@ export interface FileRouteTypes {
     | '/roi'
     | '/structured'
     | '/content/ab-tests'
+    | '/content/events'
     | '/content/history'
     | '/content/performance'
     | '/content/published'
@@ -339,6 +350,7 @@ export interface FileRouteTypes {
     | '/roi'
     | '/structured'
     | '/content/ab-tests'
+    | '/content/events'
     | '/content/history'
     | '/content/performance'
     | '/content/published'
@@ -370,6 +382,7 @@ export interface RootRouteChildren {
   RoiRoute: typeof RoiRoute
   StructuredRoute: typeof StructuredRoute
   ContentAbTestsRoute: typeof ContentAbTestsRoute
+  ContentEventsRoute: typeof ContentEventsRoute
   ContentHistoryRoute: typeof ContentHistoryRoute
   ContentPerformanceRoute: typeof ContentPerformanceRoute
   ContentPublishedRoute: typeof ContentPublishedRoute
@@ -448,6 +461,13 @@ declare module '@tanstack/react-router' {
       path: '/content/ab-tests'
       fullPath: '/content/ab-tests'
       preLoaderRoute: typeof ContentAbTestsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/content/events': {
+      id: '/content/events'
+      path: '/content/events'
+      fullPath: '/content/events'
+      preLoaderRoute: typeof ContentEventsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/content/history': {
@@ -617,6 +637,7 @@ const rootRouteChildren: RootRouteChildren = {
   RoiRoute: RoiRoute,
   StructuredRoute: StructuredRoute,
   ContentAbTestsRoute: ContentAbTestsRoute,
+  ContentEventsRoute: ContentEventsRoute,
   ContentHistoryRoute: ContentHistoryRoute,
   ContentPerformanceRoute: ContentPerformanceRoute,
   ContentPublishedRoute: ContentPublishedRoute,

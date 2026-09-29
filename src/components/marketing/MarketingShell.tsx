@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { CalendarDays, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   BarChart3,
@@ -49,7 +49,7 @@ const GROUPS: { label?: string; items: Item[] }[] = [
     label: "Content Library",
     items: [
       { label: "Content", to: "/content", icon: Sparkles },
-      { label: "Releases", to: "/content/releases", icon: Send },
+      { label: "Events & Holidays", to: "/content/events", icon: CalendarDays },
       { label: "Results", to: "/content/results", icon: BarChart3 },
       { label: "Settings", to: "/content/settings", icon: Settings2 },
     ],
@@ -69,7 +69,7 @@ const MOBILE_NAV = [
   { label: "In-property", to: "/marketing/in-property" },
   { label: "Media", to: "/marketing/media" },
   { label: "Content", to: "/content" },
-  { label: "Releases", to: "/content/releases" },
+  { label: "Events", to: "/content/events" },
   { label: "Results", to: "/content/results" },
   { label: "Promotions", to: "/marketing/promotions" },
   { label: "Drip", to: "/campaign" },

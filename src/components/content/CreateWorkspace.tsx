@@ -16,6 +16,7 @@ import { RISK, resetReviewed, riskFor, setDismissed, topRelease, useReleaseUi, v
 import { AiCreateStudio } from "./AiCreateStudio";
 import { ReviewWorkspace } from "./ReviewWorkspace";
 import { StarterScreen } from "./StarterScreen";
+import { PeriodTimeline } from "./PeriodTimeline";
 
 const START_MONTH = 8;
 const GROUP_LABEL: Record<MarketingCampaign["group"], string> = { invites: "Automated Invites", transactional: "Automated Transactional", in_property: "In-Property Transactional" };
@@ -72,7 +73,8 @@ export function CreateWorkspace() {
   const publish = (range: string) => { const count = publishDraftRelease(range); setStudio(false); setNotice(`${count} campaigns published as the ${range} release.`); };
 
   return <MarketingShell title="Content Library"><main className={`mx-auto px-4 pb-20 pt-6 sm:px-6 ${studioMinimized ? "grid max-w-[1540px] items-start gap-6 xl:grid-cols-[minmax(0,1fr)_440px]" : studio ? "max-w-[1500px]" : "max-w-7xl"}`}>
-    {entered && (!studio || studioMinimized) && <header className={`grid min-w-0 gap-4 pb-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end ${studioMinimized ? "xl:col-span-2" : ""}`}><div className="min-w-0"><p className="text-[11px] font-semibold uppercase text-brand">Content Library</p><h1 className="mt-2 font-display text-[30px] font-semibold text-card-foreground sm:truncate sm:text-[36px]">Published content</h1><p className="mt-1 max-w-2xl text-[13px] text-muted-foreground">View and refine the messages currently reaching your guests.</p></div><Button className="w-fit shrink-0" variant="brand" onClick={() => { setStudio(true); setStudioMinimized(false); }}><Sparkles size={15} />Edit content with AI</Button></header>}
+    {entered && (!studio || studioMinimized) && <header className={`grid min-w-0 gap-4 pb-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end ${studioMinimized ? "xl:col-span-2" : ""}`}><div className="min-w-0"><p className="text-[11px] font-semibold uppercase text-brand">Content Library</p><h1 className="mt-2 font-display text-[30px] font-semibold text-card-foreground sm:truncate sm:text-[36px]">Published content</h1><p className="mt-1 max-w-2xl text-[13px] text-muted-foreground">View and refine the messages currently reaching your guests.</p></div><Button className="w-fit shrink-0" variant="brand" onClick={() => { setStudio(true); setStudioMinimized(false); }}><Sparkles size={15} />Update with AI</Button></header>}
+    {entered && (!studio || studioMinimized) && <div className={studioMinimized ? "xl:col-span-2" : ""}><PeriodTimeline /></div>}
     {!entered && !studio && <StarterScreen onLocalize={() => { setEntered(true); setStudio(true); setStudioMinimized(false); }} onKeep={() => setEntered(true)} />}
     {notice && <div role="status" className="mb-4 rounded-md bg-brand-soft p-3 text-[12px] font-medium text-brand">{notice}</div>}
     {studio && <div className={studioMinimized ? "order-2 min-w-0 xl:sticky xl:top-4" : ""}><AiCreateStudio minimized={studioMinimized} onMinimize={() => setStudioMinimized((value) => !value)} onClose={() => { setStudio(false); setStudioMinimized(false); }} onReview={() => { setStudio(false); setStudioMinimized(false); setNotice(""); }} onPublish={publish} /></div>}
