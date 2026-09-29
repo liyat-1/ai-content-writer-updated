@@ -233,7 +233,8 @@
 
 - [x] Test every file type (sheet, CSV, Word, slides, PDF, photo, video) in both AI panels, plan cards, apply flow
 
-## Starter screen redesign (in progress)
-- [ ] Redesign Content Library opening screen: centered invitation, upcoming events/holidays horizon, two buttons (Localize with AI / Keep current content)
-- [ ] Constraints: existing Directful color system, Roboto font, reference image two.jpg for layout vibe
-- [ ] Show 3 design options, implement user's pick
+## Starter screen redesign
+- [x] Redesign Content Library opening screen: centered invitation, upcoming events/holidays horizon, two buttons (Localize with AI / Keep current content)
+- [x] Constraints: existing Directful color system, Roboto font, reference image two.jpg for layout vibe
+- [x] Show 3 design options, implement user's pick (fanned card row)
+- [x] Gradient calendar vibe + real event photos on cards; verified both buttons and mobile width — no console errors
