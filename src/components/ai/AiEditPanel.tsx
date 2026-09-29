@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown, FileText, GitCompare, Image, Minimize2, Paperclip, Plus, RefreshCw, SlidersHorizontal, Pencil, Video, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -240,8 +241,7 @@ export function AiEditPanel({
         <TooltipProvider><PromptInput
           accept={ACCEPT_ALL}
           multiple
-          maxFiles={6}
-          maxFileSize={20 * 1024 * 1024}
+          maxFiles={10} maxFileSize={25 * 1024 * 1024} onError={(e) => toast.error(e.message)}
           onSubmit={({ text, files }) => {
             void ask(text, undefined, files.map((f) => ({ url: f.url, filename: f.filename, mediaType: f.mediaType })));
           }}

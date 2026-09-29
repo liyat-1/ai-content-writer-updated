@@ -228,3 +228,7 @@
 - [x] Restyle full and minimized AI modes from the supplied airy split-workspace references
 - [x] Rebuild minimized planning as a purpose-designed assistant rail instead of a compressed full workspace
 - [x] Verify publication selection and both AI modes at desktop and mobile widths
+
+## AI panel file testing
+
+- [x] Test every file type (sheet, CSV, Word, slides, PDF, photo, video) in both AI panels, plan cards, apply flow

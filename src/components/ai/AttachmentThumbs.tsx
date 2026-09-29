@@ -13,14 +13,14 @@ function FileIcon({ name }: { name: string }) {
 /** Thumbnail tile: real preview for images/video, labelled tile for documents. */
 export function Thumb({ name, mediaType, url, onRemove, size = 64 }: { name: string; mediaType?: string; url?: string; onRemove?: () => void; size?: number }) {
   const isImage = mediaType?.startsWith("image/") && url;
-  const isVideo = mediaType?.startsWith("video/") && url;
+  const isVideo = mediaType?.startsWith("video/");
   return (
     <div className="group relative shrink-0" style={{ width: isImage || isVideo ? size : undefined }}>
       {isImage ? (
         <img src={url} alt={name} className="rounded-md border border-border object-cover" style={{ width: size, height: size }} />
       ) : isVideo ? (
         <div className="relative overflow-hidden rounded-md border border-border bg-muted" style={{ width: size, height: size }}>
-          {url.startsWith("data:image") ? <img src={url} alt={name} className="size-full object-cover" /> : <video src={url} muted preload="metadata" className="size-full object-cover" />}
+          {!url ? <span className="grid size-full place-items-center text-muted-foreground"><Film size={20} /></span> : url.startsWith("data:image") ? <img src={url} alt={name} className="size-full object-cover" /> : <video src={url} muted preload="metadata" className="size-full object-cover" />}
           <span className="absolute bottom-1 left-1 grid size-5 place-items-center rounded-sm bg-foreground/70 text-background"><Film size={11} /></span>
         </div>
       ) : (
