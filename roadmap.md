@@ -232,3 +232,8 @@
 ## AI panel file testing
 
 - [x] Test every file type (sheet, CSV, Word, slides, PDF, photo, video) in both AI panels, plan cards, apply flow
+
+## Starter screen redesign (in progress)
+- [ ] Redesign Content Library opening screen: centered invitation, upcoming events/holidays horizon, two buttons (Localize with AI / Keep current content)
+- [ ] Constraints: existing Directful color system, Roboto font, reference image two.jpg for layout vibe
+- [ ] Show 3 design options, implement user's pick
