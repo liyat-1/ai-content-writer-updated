@@ -8,3 +8,12 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Content Library cards own their channel and audience preview state so each card only exposes channels that campaign actually sends.
+- Campaign-level Directful AI editing replaces the live preview in context and can minimize to a persistent rail without covering or resetting the editor.
+- The package-level AI content planner renders inline above the calendar; campaign-level AI editing remains inside the review workspace's dynamic panel so context never disappears.
+- Content release data lives in src/lib/releases.ts as one mock source for Content, Releases and Results.
+- Releases and Results use one selected publication and its matching prior-period comparison; avoid unrelated analytics hierarchies.
+- The year-round foundation remains live underneath seasonal publications; uncovered future months automatically use it until AI content is explicitly scheduled.
+- AI editing transcripts and attachment composer controls use the installed AI Elements primitives so chat behavior stays accessible and consistent.
+- Package AI planning opens as the sole full workspace, then minimizes into a purpose-built 440px assistant rail beside the calendar without resetting; narrower screens stack instead of compressing.
