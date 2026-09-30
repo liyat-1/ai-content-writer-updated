@@ -132,6 +132,15 @@ export type ReleaseResult = {
   insights: Insight[];
 };
 
+/** Campaign-specific AI insights shown on Results cards. */
+export const CAMPAIGN_INSIGHTS: Record<string, string> = {
+  "after-last-visit": "Guests respond to neighborhood comebacks — event-led subjects drove most of the click lift for returning guests.",
+  "lost-3": "A softer nudge naming Broadway Week held attention without feeling like a sales reminder.",
+  "just-booked": "Clear pre-stay details cut confusion; clicks stayed steady for both Direct and OTA guests.",
+  "before-arrival": "Arrival-day timing now matches check-in hours, which likely improved same-day opens.",
+  "post-checkout": "A shorter thank-you with one clear link outperformed the longer summary version.",
+};
+
 const campaignResults = (adjustment = 0): ReleaseCampaignResult[] => [
   { campaignId: "after-last-visit", clickRate: 8.7 + adjustment, clickToBook: 2.9 + adjustment / 3, spamRate: 0.08, priorClickRate: 7.3 },
   { campaignId: "lost-3", clickRate: 8.1 + adjustment, clickToBook: 2.5 + adjustment / 3, spamRate: 0.11, priorClickRate: 7.2 },
