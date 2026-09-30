@@ -141,13 +141,13 @@ export const CAMPAIGN_INSIGHTS: Record<string, string> = {
   "post-checkout": "A shorter thank-you with one clear link outperformed the longer summary version.",
 };
 
-const campaignResults = (adjustment = 0): ReleaseCampaignResult[] => [
+const campaignResults = (adjustment = 0, overrides: Record<string, Partial<ReleaseCampaignResult>> = {}): ReleaseCampaignResult[] => ([
   { campaignId: "after-last-visit", clickRate: 8.7 + adjustment, clickToBook: 2.9 + adjustment / 3, spamRate: 0.08, priorClickRate: 7.3 },
   { campaignId: "lost-3", clickRate: 8.1 + adjustment, clickToBook: 2.5 + adjustment / 3, spamRate: 0.11, priorClickRate: 7.2 },
   { campaignId: "just-booked", clickRate: 7.8 + adjustment, clickToBook: 3.2 + adjustment / 3, spamRate: 0.05, priorClickRate: 7.2 },
   { campaignId: "before-arrival", clickRate: 7.2 + adjustment, clickToBook: 3.8 + adjustment / 3, spamRate: 0.06, priorClickRate: 6.8 },
   { campaignId: "post-checkout", clickRate: 6.9 + adjustment, clickToBook: 2.1 + adjustment / 3, spamRate: 0.09, priorClickRate: 6.7 },
-];
+] as ReleaseCampaignResult[]).map((item) => ({ ...item, ...overrides[item.campaignId] }));
 
 export const RELEASE_RESULTS: Record<string, ReleaseResult> = {
   "holiday-2026": {
