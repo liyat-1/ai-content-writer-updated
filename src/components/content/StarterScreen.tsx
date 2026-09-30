@@ -1,15 +1,11 @@
 import { Link } from "@tanstack/react-router";
-import { Heart, TreePine, Trophy, type LucideIcon } from "lucide-react";
+import { useState } from "react";
+import { type LucideIcon } from "lucide-react";
 import { calendar, daysUntil, fmtRange, TODAY, useCalendar } from "@/lib/calendar";
 import { Button } from "@/components/ui/button";
 import { Sparkle } from "@/components/ai/Sparkle";
-import marathonImg from "@/assets/events/nyc-marathon.jpg";
-import paradeImg from "@/assets/events/thanksgiving-parade.jpg";
-import treeImg from "@/assets/events/rockefeller-tree.jpg";
-import christmasImg from "@/assets/events/christmas-day.jpg";
-
-const IMAGES: Record<string, string> = { marathon: marathonImg, thanksgiving: paradeImg, tree: treeImg, christmas: christmasImg };
-const ICONS: Record<string, LucideIcon> = { Holiday: Heart, "Local event": Trophy, Seasonal: TreePine };
+import { EVENT_IMAGES, EVENT_ICONS } from "./eventImages";
+import { CalendarUploadDialog } from "./CalendarUploadDialog";
 
 const FAN = ["-rotate-6 translate-y-3", "-rotate-2 -translate-y-1", "rotate-2 -translate-y-1", "rotate-6 translate-y-3"];
 
@@ -17,6 +13,7 @@ function daysLabel(d: string) { const n = daysUntil(d); return n <= 0 ? "Now" : 
 
 export function StarterScreen({ onLocalize, onKeep }: { onLocalize: () => void; onKeep: () => void }) {
   const { events: all, hasHotelCalendar } = useCalendar();
+  const [uploadOpen, setUploadOpen] = useState(false);
   const events = all.filter((e) => e.end >= TODAY).slice(0, 4);
   return (
     <section aria-label="Plan with AI" className="ai-surface relative -mx-4 overflow-hidden px-4 pb-16 pt-12 text-center sm:-mx-6 sm:px-6">
@@ -31,7 +28,7 @@ export function StarterScreen({ onLocalize, onKeep }: { onLocalize: () => void; 
         </p>
         <div className="mt-8 flex items-start justify-center py-6">
           {events.map((event, i) => {
-            const Icon = ICONS[event.type]; const image = IMAGES[event.id];
+            const Icon: LucideIcon = EVENT_ICONS[event.type] ?? Sparkle; const image = event.image ?? EVENT_IMAGES[event.id];
             return (
               <div key={event.id} className="starter-rise -mx-2 sm:-mx-3" style={{ animationDelay: `${180 + i * 90}ms`, zIndex: i === 1 || i === 2 ? 10 : 5 }}>
                 <article className={`group w-40 rounded-lg p-3 text-left shadow-lift transition-all duration-200 hover:z-20 hover:-translate-y-2 hover:rotate-0 sm:w-48 sm:p-4 ai-edge ${FAN[i]}`}>
@@ -61,7 +58,7 @@ export function StarterScreen({ onLocalize, onKeep }: { onLocalize: () => void; 
             <Sparkle size={15} />
             {hasHotelCalendar ? "Localize with AI" : "Localize with these"}
           </Button>
-          {!hasHotelCalendar && <Button variant="outline" size="lg" className="bg-card/70 backdrop-blur-sm" onClick={() => calendar.setHotelCalendar(true)}>Upload my calendar</Button>}
+          {!hasHotelCalendar && <Button variant="outline" size="lg" className="bg-card/70 backdrop-blur-sm" onClick={() => setUploadOpen(true)}>Upload my calendar</Button>}
           <Button variant="outline" size="lg" className="bg-card/70 backdrop-blur-sm" onClick={onKeep}>
             Keep current
           </Button>
@@ -71,6 +68,7 @@ export function StarterScreen({ onLocalize, onKeep }: { onLocalize: () => void; 
           <Link to="/content/events" className="font-semibold text-brand hover:underline">Manage events & holidays</Link>
         </p>
       </div>
+      <CalendarUploadDialog open={uploadOpen} onOpenChange={setUploadOpen} />
     </section>
   );
 }

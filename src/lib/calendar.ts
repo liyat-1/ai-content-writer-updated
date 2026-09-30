@@ -78,3 +78,9 @@ export function buildPeriods(events: CalendarEvent[], from: string, to: string):
   return out;
 }
 export const isCurrent = (p: ContentPeriod) => p.start <= TODAY && TODAY <= p.end;
+
+/** Parse an uploaded calendar CSV with columns name,start,end,type,location. */
+export function parseCsv(text: string): CalendarEvent[] {
+  return text.split(/\r?\n/).slice(1).map((line) => line.split(",").map((c) => c.trim())).filter((c) => c[0] && /^\d{4}-\d{2}-\d{2}$/.test(c[1] ?? ""))
+    .map(([name, start, end, type, location], i) => ({ id: `csv-${Date.now()}-${i}`, name, start, end: end || start, type: (["Holiday", "Local event", "Seasonal"].includes(type) ? type : "Local event") as EventType, source: "Hotel calendar", location }));
+}
