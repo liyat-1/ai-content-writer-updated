@@ -246,3 +246,12 @@
 - [x] Rebuild Published as an active-period timeline
 - [x] Merge Releases and performance into connected Results views
 - [x] Apply approved terminology and verify the complete workflow
+
+## Connected Content Calendar and Results refresh
+
+- [ ] One schedule header: month on top, selected content period below, previous/next controls, Current marked by default
+- [ ] Visual photo-led "Your content plan" in full and minimized AI planning views
+- [ ] Events & Holidays rebuilt as a calendar workspace with month navigation, event blocks, side panel, and photo attachment
+- [ ] Upload modal with drag-and-drop and local-file selection from both entry points, landing on Events & Holidays
+- [ ] Campaign Results cards with property usage, prior comparison, AI insight, and Use previous version when better
+- [ ] Verify the refreshed flows at desktop and narrow widths — no console errors
