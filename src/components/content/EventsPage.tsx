@@ -62,7 +62,7 @@ export function EventsPage() {
     </form>
   ) : selected ? (
     <div className="flex min-h-0 flex-col">
-      <div className="relative overflow-hidden rounded-md"><div className={`grid h-32 place-items-center ${TYPE_STYLE[selected.type]}`}>{(() => { const Icon = EVENT_ICONS[selected.type] ?? CalendarDays; return <Icon size={26} strokeWidth={1.75} />; })()}</div>{(selected.image ?? EVENT_IMAGES[selected.id]) && <img src={selected.image ?? EVENT_IMAGES[selected.id]} alt={selected.name} className="h-32 w-full object-cover" />}</div>
+      <div className="relative overflow-hidden rounded-md">{(() => { const Icon = EVENT_ICONS[selected.type] ?? CalendarDays; const image = selected.image ?? EVENT_IMAGES[selected.id]; return image ? <img src={image} alt={selected.name} className="h-32 w-full object-cover" /> : <div className={`grid h-32 place-items-center ${TYPE_STYLE[selected.type]}`}><Icon size={26} strokeWidth={1.75} /></div>; })()}</div>
       <p className="mt-3 text-[15px] font-semibold text-card-foreground">{selected.name}</p>
       <p className="mt-1 text-[12px] text-muted-foreground">{fmtRange(selected.start, selected.end)}</p>
       <div className="mt-2 flex flex-wrap items-center gap-2"><span className={`rounded-sm px-1.5 py-0.5 text-[10px] font-semibold ${TYPE_STYLE[selected.type]}`}>{selected.type}</span><span className="rounded-sm bg-muted px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground">{selected.source}</span></div>
