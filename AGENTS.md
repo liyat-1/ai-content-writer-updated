@@ -18,5 +18,5 @@
 - The Library opens on an events-horizon starter; "Keep current content" reveals the published library, "Localize with AI" opens the full planner.
 - Published content navigates by content period: one schedule header with the month on top and the selected period below, previous/next controls, today's period marked Current; no separate timeline box.
 - Calendar uploads from the starter and Events & Holidays flow through one CalendarUploadDialog (drag-drop or local file) and land on Events & Holidays.
-- Event photos and per-type icons come from src/components/content/eventImages.ts, shared by starter cards, the visual content plan, and the calendar.
+- Event photos and per-type icons come from src/components/content/eventImages.ts, shared by starter cards, the visual content plan, and the calendar; images are imported statically (never `new URL(..., import.meta.url)`, which breaks SSR/hydration).
 - Results campaigns are cards with property usage, prior comparison, an AI insight, and Use previous version only when the prior version performed better.
