@@ -132,13 +132,22 @@ export type ReleaseResult = {
   insights: Insight[];
 };
 
-const campaignResults = (adjustment = 0): ReleaseCampaignResult[] => [
+/** Campaign-specific AI insights shown on Results cards. */
+export const CAMPAIGN_INSIGHTS: Record<string, string> = {
+  "after-last-visit": "Guests respond to neighborhood comebacks — event-led subjects drove most of the click lift for returning guests.",
+  "lost-3": "A softer nudge naming Broadway Week held attention without feeling like a sales reminder.",
+  "just-booked": "Clear pre-stay details cut confusion; clicks stayed steady for both Direct and OTA guests.",
+  "before-arrival": "Arrival-day timing now matches check-in hours, which likely improved same-day opens.",
+  "post-checkout": "A shorter thank-you with one clear link outperformed the longer summary version.",
+};
+
+const campaignResults = (adjustment = 0, overrides: Record<string, Partial<ReleaseCampaignResult>> = {}): ReleaseCampaignResult[] => ([
   { campaignId: "after-last-visit", clickRate: 8.7 + adjustment, clickToBook: 2.9 + adjustment / 3, spamRate: 0.08, priorClickRate: 7.3 },
   { campaignId: "lost-3", clickRate: 8.1 + adjustment, clickToBook: 2.5 + adjustment / 3, spamRate: 0.11, priorClickRate: 7.2 },
   { campaignId: "just-booked", clickRate: 7.8 + adjustment, clickToBook: 3.2 + adjustment / 3, spamRate: 0.05, priorClickRate: 7.2 },
   { campaignId: "before-arrival", clickRate: 7.2 + adjustment, clickToBook: 3.8 + adjustment / 3, spamRate: 0.06, priorClickRate: 6.8 },
   { campaignId: "post-checkout", clickRate: 6.9 + adjustment, clickToBook: 2.1 + adjustment / 3, spamRate: 0.09, priorClickRate: 6.7 },
-];
+] as ReleaseCampaignResult[]).map((item) => ({ ...item, ...overrides[item.campaignId] }));
 
 export const RELEASE_RESULTS: Record<string, ReleaseResult> = {
   "holiday-2026": {
@@ -152,7 +161,7 @@ export const RELEASE_RESULTS: Record<string, ReleaseResult> = {
     releaseId: "sep-nov-2026", measuredThrough: "Sep 27, 2026", sampleNote: "3 days of the live publication · compared with Sep–Oct 2025",
     metrics: [{ label: "Click rate", value: "7.9%", previous: "7.1%", delta: "+0.8 pts" }, { label: "Click-to-book", value: "2.8%", previous: "2.3%", delta: "+0.5 pts" }, { label: "Spam rate", value: "0.08%", previous: "0.12%", delta: "−0.04 pts" }],
     months: [{ month: 8, clickRate: 7.9, clickToBook: 2.8, spamRate: 0.08, priorClickRate: 7.1 }, { month: 9, clickRate: 0, clickToBook: 0, spamRate: 0, priorClickRate: 7.1 }],
-    campaigns: campaignResults(0.3),
+    campaigns: campaignResults(0.3, { "post-checkout": { clickRate: 6.4, priorClickRate: 6.9 } }),
     insights: [
       { id: "26a", text: "Event-led subjects are opening more often for Direct guests.", evidence: "Broadway Week subjects opened at 24% versus 18% for the comparable 2025 publication." },
       { id: "26b", text: "Shorter text messages are producing more clicks on mobile.", evidence: "Messages under 140 characters reached 3.4% click-through versus 2.6% in the comparison publication." },

@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, CalendarRange, Check, Expand, FileSpreadsheet, FileText, Image, Loader2, Minimize2, Paperclip, Pencil, Sparkles, Video, X } from "lucide-react";
+import { ArrowRight, CalendarDays, CalendarRange, Check, Expand, FileSpreadsheet, FileText, Image, Loader2, Minimize2, Paperclip, Pencil, Sparkles, Video, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Conversation, ConversationContent, ConversationScrollButton } from "@/components/ai-elements/conversation";
@@ -8,6 +8,7 @@ import { Message, MessageContent, MessageResponse } from "@/components/ai-elemen
 import { PromptInput, PromptInputActionAddAttachments, PromptInputActionMenu, PromptInputActionMenuContent, PromptInputActionMenuItem, PromptInputActionMenuTrigger, PromptInputFooter, PromptInputSubmit, PromptInputTextarea, PromptInputTools, usePromptInputAttachments, type PromptInputMessage } from "@/components/ai-elements/prompt-input";
 import { AiMark } from "./shared";
 import { ComposerThumbs, SentThumbs, type SentFile } from "@/components/ai/AttachmentThumbs";
+import { EVENT_ICONS, EVENT_IMAGES } from "./eventImages";
 import { ACCEPT_ALL, prepareAttachments } from "@/lib/attachments";
 import { planAssist, type PlanEvent } from "@/lib/ai.functions";
 import { Shimmer } from "@/components/ai-elements/shimmer";
@@ -20,7 +21,6 @@ const STEPS = ["After Last Visit", "3 Months", "6 Months", "9 Months", "12 Month
 const pad = (n: number) => String(n).padStart(2, "0");
 const monthStart = (m: number) => `2026-${pad(m + 1)}-01`;
 const monthEnd = (m: number) => new Date(Date.UTC(2026, m + 1, 0)).toISOString().slice(0, 10);
-const KIND_STYLE: Record<PeriodKind, string> = { Standard: "bg-muted text-muted-foreground", "Event-based": "bg-brand text-brand-foreground", Seasonal: "bg-brand-soft text-brand" };
 
 export function AiCreateStudio({ onClose, onMinimize, minimized = false, onReview }: { onClose: () => void; onMinimize: () => void; minimized?: boolean; onReview: () => void }) {
   const { campaigns } = useLibrary();
@@ -108,12 +108,22 @@ export function AiCreateStudio({ onClose, onMinimize, minimized = false, onRevie
 }
 
 function PeriodPlan({ periods, gaps, setGap, compact, onEdit, onApprove }: { periods: ContentPeriod[]; gaps: Record<string, GapChoice>; setGap: (id: string, v: GapChoice) => void; compact: boolean; onEdit: () => void; onApprove: () => void }) {
+  const { events } = useCalendar();
+  const byId = useMemo(() => new Map(events.map((e) => [e.id, e])), [events]);
   const written = periods.filter((p) => p.kind !== "Standard" || gaps[p.id] === "ai").length;
   return <section aria-label="Content period plan" className="overflow-hidden rounded-lg border border-brand/30 bg-card shadow-lift">
     <div className="ai-surface flex flex-wrap items-end justify-between gap-2 border-b border-brand/15 p-4"><div><p className="text-[10.5px] font-semibold uppercase text-brand">Your content plan</p><h3 className={`${compact ? "text-[15px]" : "font-display text-[20px]"} font-semibold text-card-foreground`}>{periods.length} periods · {written} to write</h3></div><span className="rounded-sm bg-brand-soft px-2 py-1 text-[10.5px] font-semibold text-brand">Direct + OTA · Email + Text</span></div>
-    <ol className="divide-y divide-border">{periods.map((p, i) => <li key={p.id} className="p-4"><div className="flex items-start gap-3"><span className="grid size-7 shrink-0 place-items-center rounded-md bg-muted text-[10.5px] font-semibold text-muted-foreground">{i + 1}</span><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><span className={`rounded-sm px-1.5 py-0.5 text-[10px] font-semibold ${KIND_STYLE[p.kind]}`}>{p.kind}</span><p className="text-[12.5px] font-semibold text-card-foreground">{p.name}</p><span className="text-[11px] text-muted-foreground">{fmtRange(p.start, p.end)}</span></div><p className="mt-1 text-[11.5px] leading-relaxed text-muted-foreground">{p.reason}</p>{p.windowNote && <p className="mt-1 text-[10.5px] text-brand">{p.windowNote}</p>}
-      {p.kind === "Standard" && <div role="radiogroup" aria-label={`Gap ${fmtRange(p.start, p.end)}`} className="mt-2 flex flex-wrap gap-1.5">{([["keep", "Keep year-round content"], ["ai", "Write seasonal content with AI"]] as const).map(([v, label]) => <Button key={v} role="radio" aria-checked={(gaps[p.id] ?? "keep") === v} size="sm" variant={(gaps[p.id] ?? "keep") === v ? "secondary" : "ghost"} className="h-7 px-2 text-[10.5px]" onClick={() => setGap(p.id, v)}>{(gaps[p.id] ?? "keep") === v && <Check size={11} />}{label}</Button>)}</div>}
-    </div></div></li>)}</ol>
+    <div className={compact ? "grid gap-2 p-3" : "grid gap-3 p-4 sm:grid-cols-2"}>{periods.map((p) => { const event = p.eventId ? byId.get(p.eventId) : undefined; const image = event?.image ?? (p.eventId ? EVENT_IMAGES[p.eventId] : undefined); const Icon = p.kind === "Standard" ? CalendarDays : EVENT_ICONS[event?.type ?? ""] ?? CalendarDays;
+      return <article key={p.id} className="group overflow-hidden rounded-lg border border-border bg-card shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lift">
+        <div className={`relative overflow-hidden ${compact ? "h-14" : "h-28"}`}>
+          {image ? <img src={image} alt={p.name} loading="lazy" className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" /> : <div className={`grid h-full place-items-center ${p.kind === "Standard" ? "bg-gradient-to-br from-muted to-canvas text-muted-foreground" : "bg-brand-soft text-brand"}`}><Icon size={compact ? 16 : 26} strokeWidth={1.75} /></div>}
+          <span className="absolute left-2 top-2 rounded-sm bg-card/90 px-1.5 py-0.5 text-[9.5px] font-semibold text-card-foreground shadow-sm backdrop-blur-sm">{fmtRange(p.start, p.end)}</span>
+          <span className="absolute right-2 top-2 rounded-sm bg-brand px-1.5 py-0.5 text-[9.5px] font-semibold text-brand-foreground shadow-sm">{p.kind}</span>
+        </div>
+        <div className="p-3"><p className={`${compact ? "text-[12px]" : "text-[13px]"} font-semibold text-card-foreground`}>{p.name}</p><p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-muted-foreground">{p.reason}</p>{p.windowNote && <p className="mt-1 text-[10px] text-brand">{p.windowNote}</p>}
+          {p.kind === "Standard" && <div role="radiogroup" aria-label={`Gap ${fmtRange(p.start, p.end)}`} className="mt-2 flex flex-wrap gap-1.5">{([["keep", "Keep year-round content"], ["ai", "Write seasonal content with AI"]] as const).map(([v, label]) => <Button key={v} role="radio" aria-checked={(gaps[p.id] ?? "keep") === v} size="sm" variant={(gaps[p.id] ?? "keep") === v ? "secondary" : "ghost"} className="h-7 px-2 text-[10.5px]" onClick={() => setGap(p.id, v)}>{(gaps[p.id] ?? "keep") === v && <Check size={11} />}{label}</Button>)}</div>}
+        </div>
+      </article>; })}</div>
     <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border p-4"><p className="text-[11px] text-muted-foreground">Generated content goes to Review before publishing.</p><div className="flex gap-2"><Button variant="outline" onClick={onEdit}><Pencil />Edit plan</Button><Button variant="brand" disabled={!written} onClick={onApprove}><Sparkles />Approve & write content</Button></div></div>
   </section>;
 }

@@ -9,13 +9,14 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Content Library cards own their channel and audience preview state so each card only exposes channels that campaign actually sends.
-- Campaign-level Directful AI editing replaces the live preview in context and can minimize to a persistent rail without covering or resetting the editor.
-- The package-level AI content planner renders inline above the calendar; campaign-level AI editing remains inside the review workspace's dynamic panel so context never disappears.
+- Content Library cards own their channel/audience preview state so each card only exposes channels the campaign actually sends.
+- Campaign-level AI editing replaces the live preview in context and can minimize to a persistent rail without covering or resetting the editor.
+- Package AI planning opens as the sole full workspace, then minimizes into a 440px assistant rail beside the calendar; narrower screens stack instead of compressing.
+- AI chat transcripts and attachment composers use the installed AI Elements primitives so chat behavior stays consistent.
 - Content release data lives in src/lib/releases.ts as one mock source for Content, Releases and Results.
-- Releases and Results use one selected publication and its matching prior-period comparison; avoid unrelated analytics hierarchies.
-- The year-round foundation remains live underneath seasonal publications; uncovered future months automatically use it until AI content is explicitly scheduled.
-- AI editing transcripts and attachment composer controls use the installed AI Elements primitives so chat behavior stays accessible and consistent.
-- Package AI planning opens as the sole full workspace, then minimizes into a purpose-built 440px assistant rail beside the calendar without resetting; narrower screens stack instead of compressing.
-
-- The Content Library opens on an events-horizon starter screen; "Keep current content" reveals the published library and "Localize with AI" opens the full planner. Why: the first screen should sell AI localization instead of starting at the calendar.
+- Releases and Results use one selected publication and its matching prior-period comparison; no unrelated analytics hierarchies. The year-round foundation stays live underneath seasonal publications.
+- The Library opens on an events-horizon starter; "Keep current content" reveals the published library, "Localize with AI" opens the full planner.
+- Published content navigates by content period: one schedule header with the month on top and the selected period below, previous/next controls, today's period marked Current; no separate timeline box.
+- Calendar uploads from the starter and Events & Holidays flow through one CalendarUploadDialog (drag-drop or local file) and land on Events & Holidays.
+- Event photos and per-type icons come from src/components/content/eventImages.ts, shared by starter cards, the visual content plan, and the calendar; images are imported statically (never `new URL(..., import.meta.url)`, which breaks SSR/hydration).
+- Results campaigns are cards with property usage, prior comparison, an AI insight, and Use previous version only when the prior version performed better.
