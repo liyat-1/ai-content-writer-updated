@@ -30,7 +30,7 @@ export function StarterScreen({ onLocalize, onKeep }: { onLocalize: () => void; 
           {events.map((event, i) => {
             const Icon: LucideIcon = EVENT_ICONS[event.type] ?? Sparkle; const image = event.image ?? EVENT_IMAGES[event.id];
             return (
-              <div key={event.id} className="starter-rise -mx-2 sm:-mx-3" style={{ animationDelay: `${180 + i * 90}ms`, zIndex: i === 1 || i === 2 ? 10 : 5 }}>
+              <div key={event.id} className="starter-rise mx-0.5 sm:mx-1.5" style={{ animationDelay: `${180 + i * 90}ms`, zIndex: i === 1 || i === 2 ? 10 : 5 }}>
                 <article className={`group w-40 rounded-lg p-3 text-left shadow-lift transition-all duration-200 hover:z-20 hover:-translate-y-2 hover:rotate-0 sm:w-48 sm:p-4 ai-edge ${FAN[i]}`}>
                   <div className="relative h-24 overflow-hidden rounded-md sm:h-28">
                     {image ? (
