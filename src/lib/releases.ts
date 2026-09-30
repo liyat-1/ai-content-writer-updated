@@ -121,7 +121,7 @@ export function useSelectedRelease() {
 
 export type ReleaseMetric = { label: string; value: string; previous: string; delta: string };
 export type ReleaseMonthResult = { month: number; clickRate: number; clickToBook: number; spamRate: number; priorClickRate: number };
-export type ReleaseCampaignResult = { campaignId: string; clickRate: number; clickToBook: number; spamRate: number; priorClickRate: number };
+export type ReleaseCampaignResult = { campaignId: string; clickRate: number; clickToBook: number; spamRate: number; priorClickRate: number; insight?: string };
 export type ReleaseResult = {
   releaseId: string;
   measuredThrough: string;
