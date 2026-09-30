@@ -16,7 +16,8 @@ import { RISK, resetReviewed, riskFor, setDismissed, topRelease, useReleaseUi, v
 import { AiCreateStudio } from "./AiCreateStudio";
 import { ReviewWorkspace } from "./ReviewWorkspace";
 import { StarterScreen } from "./StarterScreen";
-import { PeriodTimeline } from "./PeriodTimeline";
+import { PeriodKindBadge } from "./PeriodTimeline";
+import { TODAY, buildPeriods, fmtRange, isCurrent, useCalendar } from "@/lib/calendar";
 
 const START_MONTH = 8;
 const GROUP_LABEL: Record<MarketingCampaign["group"], string> = { invites: "Automated Invites", transactional: "Automated Transactional", in_property: "In-Property Transactional" };
@@ -46,7 +47,6 @@ function PublishedCard({ campaign, libraryCampaign, pack, draft, month, monthNam
 }
 
 export function CreateWorkspace() {
-  const [offset, setOffset] = useState(0);
   const [studio, setStudio] = useState(false);
   const [studioMinimized, setStudioMinimized] = useState(false);
   const [entered, setEntered] = useState(false);
@@ -60,13 +60,19 @@ export function CreateWorkspace() {
   const [conflict, setConflict] = useState(false);
   const mk = useMarketing();
   const { campaigns: libraryCampaigns } = useLibrary();
+  const { events } = useCalendar();
   const hasDrafts = libraryCampaigns.some((campaign) => campaign.status === "Needs review" || campaign.status === "Approved");
-  const month = (START_MONTH + offset) % 12;
-  const year = 2026 + Math.floor((START_MONTH + offset) / 12);
+  const periods = useMemo(() => buildPeriods(events, TODAY, "2026-12-31"), [events]);
+  const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null);
+  const currentPeriod = periods.findIndex(isCurrent);
+  const periodIndex = selectedPeriod && periods.some((p) => p.id === selectedPeriod) ? periods.findIndex((p) => p.id === selectedPeriod) : Math.max(0, currentPeriod);
+  const period = periods[periodIndex];
+  const month = period ? Number(period.start.slice(5, 7)) - 1 : START_MONTH;
+  const year = period ? Number(period.start.slice(0, 4)) : 2026;
   const monthName = new Intl.DateTimeFormat("en", { month: "long", timeZone: "UTC" }).format(new Date(Date.UTC(year, month, 1)));
   const packages = useMemo(() => MONTH_PACKAGES.filter((pack) => pack.month === month && pack.year === year), [month, year]);
   const [selectedPackages, setSelectedPackages] = useState<Record<string, string>>({ "8-2026": "sep-live", "9-2026": "oct-ai", "10-2026": "nov-default", "11-2026": "dec-default" });
-  const selectedPack = packages.find((pack) => pack.id === selectedPackages[`${month}-${year}`]) ?? packages[0] ?? { id: "default", month, year, label: "Original year-round", version: "v1", source: "default" as const, status: offset === 0 ? "Live now" as const : "Scheduled" as const, note: "Fallback content" };
+  const selectedPack = packages.find((pack) => pack.id === selectedPackages[`${month}-${year}`]) ?? packages[0] ?? { id: "default", month, year, label: "Original year-round", version: "v1", source: "default" as const, status: isCurrent(period) ? ("Live now" as const) : ("Scheduled" as const), note: period?.reason ?? "Fallback content" };
   const reviewId = (id: string) => libraryCampaigns.find((campaign) => EDITOR_ID[campaign.id] === id && (campaign.status === "Needs review" || campaign.status === "Approved"))?.id;
   const top = topRelease(month, Boolean(ui.reverted[month]));
   const personalize = selectedPack.source === "default" || (month === 8 && selectedPack.id === "sep-live");
@@ -74,12 +80,11 @@ export function CreateWorkspace() {
 
   return <MarketingShell title="Content Library"><main className={`mx-auto px-4 pb-20 pt-6 sm:px-6 ${studioMinimized ? "grid max-w-[1540px] items-start gap-6 xl:grid-cols-[minmax(0,1fr)_440px]" : studio ? "max-w-[1500px]" : "max-w-7xl"}`}>
     {entered && (!studio || studioMinimized) && <header className={`grid min-w-0 gap-4 pb-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end ${studioMinimized ? "xl:col-span-2" : ""}`}><div className="min-w-0"><p className="text-[11px] font-semibold uppercase text-brand">Content Library</p><h1 className="mt-2 font-display text-[30px] font-semibold text-card-foreground sm:truncate sm:text-[36px]">Published content</h1><p className="mt-1 max-w-2xl text-[13px] text-muted-foreground">View and refine the messages currently reaching your guests.</p></div><Button className="w-fit shrink-0" variant="brand" onClick={() => { setStudio(true); setStudioMinimized(false); }}><Sparkles size={15} />Update with AI</Button></header>}
-    {entered && (!studio || studioMinimized) && <div className={studioMinimized ? "xl:col-span-2" : ""}><PeriodTimeline /></div>}
     {!entered && !studio && <StarterScreen onLocalize={() => { setEntered(true); setStudio(true); setStudioMinimized(false); }} onKeep={() => setEntered(true)} />}
     {notice && <div role="status" className="mb-4 rounded-md bg-brand-soft p-3 text-[12px] font-medium text-brand">{notice}</div>}
     {studio && <div className={studioMinimized ? "order-2 min-w-0 xl:sticky xl:top-4" : ""}><AiCreateStudio minimized={studioMinimized} onMinimize={() => setStudioMinimized((value) => !value)} onClose={() => { setStudio(false); setStudioMinimized(false); }} onReview={() => { setStudio(false); setStudioMinimized(false); setNotice(""); }} /></div>}
     {entered && (!studio || studioMinimized) && <section className={`overflow-hidden rounded-lg border border-border bg-card shadow-card ${studioMinimized ? "order-1 min-w-0" : ""}`} aria-label="Monthly published content">
-      <div className="ai-surface grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-b border-border px-4 py-5 sm:px-6"><Button variant="outline" size="icon" aria-label="Previous month" disabled={offset === 0} onClick={() => setOffset((value) => Math.max(0, value - 1))}><ChevronLeft /></Button><div className="text-center"><p className="flex items-center justify-center gap-2 text-[10px] font-semibold uppercase text-brand"><CalendarDays size={13} />Content schedule</p><h2 className="mt-1 text-[22px] font-semibold text-card-foreground">{monthName} {year}</h2><div className="mt-2 flex flex-wrap items-center justify-center gap-2"><span className={`rounded-sm px-2 py-1 text-[10px] font-semibold ${selectedPack.status === "Live now" ? "bg-brand text-brand-foreground" : selectedPack.status === "Scheduled" ? "bg-brand-soft text-brand" : "bg-muted text-muted-foreground"}`}>{selectedPack.status}</span><span className="text-[11px] font-medium text-muted-foreground">{selectedPack.label} · {selectedPack.version}</span></div></div><Button variant="outline" size="icon" aria-label="Next month" onClick={() => setOffset((value) => value + 1)}><ChevronRight /></Button></div>
+      <div className="ai-surface grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-b border-border px-4 py-5 sm:px-6"><Button variant="outline" size="icon" aria-label="Previous content period" disabled={periodIndex <= 0} onClick={() => setSelectedPeriod(periods[periodIndex - 1]?.id ?? null)}><ChevronLeft /></Button><div className="min-w-0 text-center"><p className="flex items-center justify-center gap-2 text-[10px] font-semibold uppercase text-brand"><CalendarDays size={13} />Content schedule</p><h2 className="mt-1 text-[22px] font-semibold text-card-foreground">{monthName} {year}</h2>{period && <div className="mt-2.5 flex flex-wrap items-center justify-center gap-2"><PeriodKindBadge kind={period.kind} /><span className={`rounded-sm px-2 py-1 text-[10px] font-semibold ${isCurrent(period) ? "bg-brand text-brand-foreground" : "bg-brand-soft text-brand"}`}>{isCurrent(period) ? "Current" : "Scheduled"}</span><span className="text-[11px] font-medium text-muted-foreground">{period.name} · {fmtRange(period.start, period.end)} · {selectedPack.version}</span></div>}{period && <p className="mx-auto mt-1.5 max-w-2xl text-[11px] leading-relaxed text-muted-foreground">{period.reason}</p>}{period?.windowNote && <p className="mt-1 text-[10.5px] text-brand">{period.windowNote}</p>}</div><Button variant="outline" size="icon" aria-label="Next content period" disabled={periodIndex >= periods.length - 1} onClick={() => setSelectedPeriod(periods[periodIndex + 1]?.id ?? null)}><ChevronRight /></Button></div>
       <div className="space-y-10 p-4 sm:p-6">
         {!hasDrafts && top.id === "default" && !ui.dismissed[month] && <div className="relative overflow-hidden rounded-lg border border-brand/20 ai-surface px-5 py-6 shadow-card sm:px-7"><div className="relative flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center"><div className="flex gap-4"><span className="grid size-11 shrink-0 place-items-center rounded-md bg-brand text-brand-foreground shadow-card"><Sparkle size={20} /></span><div><p className="text-[10.5px] font-semibold uppercase text-brand">{monthName} {year}</p><h2 className="mt-1 font-display text-[21px] font-semibold text-card-foreground">Personalize {monthName} for the season</h2><p className="mt-1 max-w-2xl text-[12.5px] leading-relaxed text-muted-foreground">These {monthName} campaigns are the same as the rest of the year. Personalize the campaigns below and schedule them for the season.</p></div></div><div className="flex gap-2"><Button variant="ghost" onClick={() => setDismissed(month, true)}>Keep current content</Button><Button variant="brand" onClick={() => { setStudio(true); setStudioMinimized(false); }}><Sparkle size={14} />Personalize with AI</Button></div></div></div>}
         {!hasDrafts && top.id === "default" && ui.dismissed[month] && <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-5 py-2.5 text-[12px] text-muted-foreground">Using year-round content · <button className="font-semibold text-brand" onClick={() => { setStudio(true); setStudioMinimized(false); }}>Personalize</button></div>}
